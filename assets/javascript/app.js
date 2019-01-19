@@ -104,8 +104,42 @@ var timeRemaining = 20;
 
 // FUNCTIONS
 // Function to show question
+function showQuestion() {
+    $("#start-button").remove();
     // Loops through array of questions
+    for (var i=0; i < QandAs.length; i++) {
         // For each question, shows question and all possible answers
+        $("#game").html(
+            QandAs[0].question +
+            "<br>" + 
+            QandAs[0].a1 + 
+            "<br>" + 
+            QandAs[0].a2 + 
+            "<br>" + 
+            QandAs[0].a3 + 
+            "<br>" + 
+            QandAs[0].a4 +
+            "<br>"
+        );
+        
+
+
+        // $("#game").append(
+        //     QandAs[i].question + 
+        //     "<br>" + 
+        //     QandAs[i].a1 + 
+        //     "<br>" + 
+        //     QandAs[i].a2 + 
+        //     "<br>" + 
+        //     QandAs[i].a3 + 
+        //     "<br>" + 
+        //     QandAs[i].a4 +
+        //     "<br>"
+        // );
+    }
+}
+    
+        
         // Remaining time counts down on interval
         // Show questions & possible answers in div with #game
         // if the the correct answer is clicked 
@@ -134,4 +168,5 @@ var timeRemaining = 20;
 
 // TO START GAME
 // Click event when user clicks div that says "start game"
+$("#start-button").on("click", showQuestion);
 // When clicked runs function to show question
