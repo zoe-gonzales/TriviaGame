@@ -101,59 +101,72 @@ var incorrectAnswers = 0;
 var unanswered = 0;
 // Var set to time remaining to answer question - uses interval to count down
 var timeRemaining = 20;
+// var to hold interval of each question
+var questionTimeout;
+// Var determining whether or not game is started
+var questionShown = false;
+// Determines what question user is currently one
+var currentQ = 0;
+// Saves the user's answer
+var userGuess;
 
 // FUNCTIONS
 // Function to show question
 function showQuestion() {
+    var questionEl = $("#questionText");
+    questionEl.addClass("question");
+    var answer1El = $("#answer1Text");
+    answer1El.attr("data-answer", QandAs[currentQ].a1);
+    var answer2El = $("#answer2Text");
+    answer2El.attr("data-answer", QandAs[currentQ].a2);
+    var answer3El = $("#answer3Text");
+    answer3El.attr("data-answer", QandAs[currentQ].a3);
+    var answer4El = $("#answer4Text");
+    answer4El.attr("data-answer", QandAs[currentQ].a4);
+    // Removes start button
     $("#start-button").remove();
-    // Loops through array of questions
-    for (var i=0; i < QandAs.length; i++) {
-        // For each question, shows question and all possible answers
-        $("#game").html(
-            QandAs[0].question +
-            "<br>" + 
-            QandAs[0].a1 + 
-            "<br>" + 
-            QandAs[0].a2 + 
-            "<br>" + 
-            QandAs[0].a3 + 
-            "<br>" + 
-            QandAs[0].a4 +
-            "<br>"
-        );
-        
-
-
-        // $("#game").append(
-        //     QandAs[i].question + 
-        //     "<br>" + 
-        //     QandAs[i].a1 + 
-        //     "<br>" + 
-        //     QandAs[i].a2 + 
-        //     "<br>" + 
-        //     QandAs[i].a3 + 
-        //     "<br>" + 
-        //     QandAs[i].a4 +
-        //     "<br>"
-        // );
+    // Sets questionShown to true
+    questionShown = true;
+    // Adds text for first question to the game
+    // Displays question and possible answers of first index in array. currentQ will increment in later function
+    questionEl.text(QandAs[currentQ].question);
+    answer1El.text(QandAs[currentQ].a1);
+    answer2El.text(QandAs[currentQ].a2);
+    answer3El.text(QandAs[currentQ].a3);
+    answer4El.text(QandAs[currentQ].a4);   
+    $("#time").text("Time remaining for this question: " + timeRemaining);
+    // Sets the remaining about of time left for this question to 20 seconds
+    // Increments down by one each seconds
+    // Shows the user how many seconds they have left on the div with id "time"
+    questionTimeout = setInterval(function() {
+            $("#time").text("Time remaining for this question: " + timeRemaining);
+            timeRemaining--;
+            if (timeRemaining === 0 && userGuess === undefined) {
+                // unanswered increments
+                unanswered++;
+                clearInterval(questionTimeout);
+                // show incorrect page
+                if (QandAs[currentQ].text !== false) {
+                    $("#game").text("The correct answer is " + QandAs[currentQ].correctAnswer);
+                    $("#game").append(QandAs[currentQ].text);
+                } else {
+                    $("#game").text("The correct answer is " + QandAs[currentQ].correctAnswer);
+                }
+                // setTimeout on incorrect page - 5 sec, then run function nextQuestion
+                setTimeout(nextQuestion, 500);
+            }
+    }, 1000);    
     }
-}
     
+    function nextQuestion() {
+        $("#game").text("");
+        userGuess = undefined;
+        timeRemaining = 20;
+        currentQ++;
+console.log()
+        showQuestion();
+    }
         
-        // Remaining time counts down on interval
-        // Show questions & possible answers in div with #game
-        // if the the correct answer is clicked 
-            // correct answers var increments
-            // setTimeout on correct page - 5 sec
-            // show correct page
-        // else if incorrect answer is clicked            
-            // incorrect answers var increments
-            // setTimeout on correct page - 5 sec
-            // show incorrect page
-        // else if remaining time = 0
-            // unanswered questions var increments
-            // setTimeout on incorrect page - 5 sec
-            // show incorrect page
     // If questions array is finished, shows results page with:
         // Message that game is over
         // # of correct answers
@@ -169,4 +182,49 @@ function showQuestion() {
 // TO START GAME
 // Click event when user clicks div that says "start game"
 $("#start-button").on("click", showQuestion);
+$("#game").on("click", ".answer", function() {
+    userGuess = $(this).attr("data-answer");
+    console.log(userGuess);
+    // if the the correct answer is clicked 
+    if(userGuess === QandAs[currentQ].correctAnswer) {
+        // correct answers var increments
+        correctAnswers++;
+        // clearing interval so countdown doesn't speed up
+        clearInterval(questionTimeout);
+        if (QandAs[currentQ].text !== false) {
+            $("#game").text("The correct answer is " + QandAs[currentQ].correctAnswer + ". " + QandAs[currentQ].text);
+        } else {
+            $("#game").text("The correct answer is " + QandAs[currentQ].correctAnswer + ".");
+        }
+        setTimeout(nextQuestion, 3000);
+        
+        
+        // setTimeout on incorrect page - 5 sec, then run function nextQuestion
+        //  var time = setTimeout(nextQuestion, 1000);
+        //  console.log(time);
+        // setTimeout on correct page - 5 sec
+        // show correct page
+        // run function nextQuestion
+    // else if incorrect answer is clicked
+    } else if (userGuess !== QandAs[currentQ].correctAnswer) {
+        // incorrect answers var increments
+        incorrectAnswers++;
+        // clearing interval so countdown doesn't speed up
+        clearInterval(questionTimeout);
+        if (QandAs[currentQ].text !== false) {
+            $("#game").text("The correct answer is " + QandAs[currentQ].correctAnswer + ". " + QandAs[currentQ].text);
+        } else {
+            $("#game").text("The correct answer is " + QandAs[currentQ].correctAnswer + ".");
+        }
+        setTimeout(nextQuestion, 3000);
+        
+        // setTimeout on incorrect page - 5 sec, then run function nextQuestion
+        // var time = setTimeout(nextQuestion, 1000);
+        // console.log(time);
+        // setTimeout on correct page - 5 sec
+        // show incorrect page
+        // run function nextQuestion
+    }
+    
+});
 // When clicked runs function to show question
