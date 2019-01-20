@@ -9,7 +9,8 @@ var QandAs = [
         a3: "Venus",
         a4: "Neptune",
         correctAnswer: "Neptune",
-        text: "Neptune’s winds can reach as high as 1,600 miles per hour."
+        text: "Neptune’s winds can reach as high as 1,600 miles per hour.",
+        image: "./assets/images/neptune.gif"
     },
     // Question 2
     {   question: "One of the planets in our solar system is lighter than water. Which one is it?",
@@ -18,7 +19,7 @@ var QandAs = [
         a3: "Jupiter",
         a4: "Neptune",
         correctAnswer: "Saturn",
-        text: false
+        image: "./assets/images/saturn.gif"
     },
     // Question 3
     {   question: "What percent of the Universe is made of dark energy and dark matter (everything not including stars and planets)?",
@@ -27,7 +28,7 @@ var QandAs = [
         a3: "90%",
         a4: "80%",
         correctAnswer: "95%",
-        text: false
+        image: "./assets/images/dark-matter.jpg"
     },
     // Question 4
     {   question: "What kind of star is the sun?",
@@ -36,7 +37,7 @@ var QandAs = [
         a3: "Red Giant",
         a4: "Neutron",
         correctAnswer: "Yellow Dwarf",
-        text: false
+        image: "./assets/images/sun.gif"
     },
     // Question 5
     {   question: "What does the Oort Cloud produce?",
@@ -45,7 +46,8 @@ var QandAs = [
         a3: "Meteors",
         a4: "Comets",
         correctAnswer: "Comets",
-        text: "The Oort Cloud contains comets that take more than 200 years to orbit the Sun."
+        text: "The Oort Cloud contains comets that take more than 200 years to orbit the Sun.",
+        image: "./assets/images/comet.jpg"
     },
     // Question 6
     {   question: "All of the stars in the Milky Way (including the Sun) orbit around a supermassive black hole that is ___ times as massive as our sun.",
@@ -54,25 +56,26 @@ var QandAs = [
         a3: "4 million",
         a4: "7 million",
         correctAnswer: "4 million",
-        text: false
+        image: "./assets/images/black-hole.jpg"
     },
     // Question 7
-    {   question: "Who came up with the  name “Milky Way”?",
+    {   question: "The ancient ___ named our galaxy the “Milky Way.”",
         a1: "Greeks",
         a2: "Romans",
-        a3: "ancient Egyptians",
-        a4: "ancient Arabs",
+        a3: "Egyptians",
+        a4: "Arabs",
         correctAnswer: "Romans",
-        text: false
+        image: "./assets/images/romans.jpg"
     },
     // Question 8
-    {   question: "Which of these spacecraft has gone beyond the boundary of our solar system?",
+    {   question: "Which of these spacecraft has traveled beyond the boundary of our solar system?",
         a1: "New Horizons",
         a2: "Voyager 1",
         a3: "Pioneer 10",
         a4: "Pioneer 11",
         correctAnswer: "Voyager 1",
-        text: "Voyager 1 passed beyond our solar system in 2012 and Voyager 2 joined it in 2018."
+        text: "Voyager 1 passed beyond our solar system in 2012 and Voyager 2 did the same in 2018.",
+        image: "./assets/images/voyager.gif"
     },
     // Question 9
     {   question: "The planet Mercury is named after the Roman god of",
@@ -81,7 +84,7 @@ var QandAs = [
         a3: "Seas",
         a4: "Commerce",
         correctAnswer: "Commerce",
-        text: false
+        image: "./assets/images/mercury.png"
     },
     // Question 10
     {   question: "What lies beyond our solar system?",
@@ -90,7 +93,7 @@ var QandAs = [
         a3: "Plenty of detectable, visible planets capable of supporting life",
         a4: "A & B",
         correctAnswer: "A & B",
-        text: false
+        image: "./assets/images/beyond.gif"
     },
 ];
 // Correct answers - counter var starts at 0
@@ -134,24 +137,24 @@ function showQuestion() {
         answer2El.text(QandAs[currentQ].a2);
         answer3El.text(QandAs[currentQ].a3);
         answer4El.text(QandAs[currentQ].a4);   
-        $("#time").text("Time remaining for this question: " + timeRemaining);
+        $("#time").text(`Time remaining for this question: ${timeRemaining}`);
         // Sets the remaining about of time left for this question to 20 seconds
         // Increments down by one each seconds
         // Shows the user how many seconds they have left on the div with id "time"
         questionTimeout = setInterval(function() {
-                $("#time").text("Time remaining for this question: " + timeRemaining);
+                $("#time").text(`Time remaining for this question: ${timeRemaining}`);
                 timeRemaining--;
                 if (timeRemaining === 0 && userGuess === undefined) {
                     // unanswered increments
                     unanswered++;
                     clearInterval(questionTimeout);
                     // show result text
-                    if (QandAs[currentQ].text !== false) {
+                    if (QandAs[currentQ].hasOwnProperty("text")) {
                         $(".answer, #time").empty();
-                        $("#questionText").text("The correct answer is " + QandAs[currentQ].correctAnswer + ". " + QandAs[currentQ].text);
+                        $("#questionText").html(`Out of time! The correct answer was ${QandAs[currentQ].correctAnswer}. ${QandAs[currentQ].text} <br> <img src='${QandAs[currentQ].image}' >`);
                     } else {
                         $(".answer, #time").empty();
-                        $("#questionText").text("The correct answer is " + QandAs[currentQ].correctAnswer + ". ");
+                        $("#questionText").html(`Out of time! The correct answer was ${QandAs[currentQ].correctAnswer}. <br> <img src='${QandAs[currentQ].image}' >`);
                     }
                     // After 5 seconds, automatically runs nextQuestion
                     setTimeout(nextQuestion, 5000);
@@ -213,12 +216,12 @@ $("#game").on("click", ".answer", function() {
         // clearing interval so countdown doesn't speed up
         clearInterval(questionTimeout);
         // show result text
-        if (QandAs[currentQ].text !== false) {
+        if (QandAs[currentQ].hasOwnProperty("text")) {
             $(".answer, #time").empty();
-            $("#questionText").text("The correct answer is " + QandAs[currentQ].correctAnswer + ". " + QandAs[currentQ].text);
+            $("#questionText").html(`That's right! ${QandAs[currentQ].text} <br> <img src='${QandAs[currentQ].image}' >`);
         } else {
             $(".answer, #time").empty();
-            $("#questionText").text("The correct answer is " + QandAs[currentQ].correctAnswer + ". ");
+            $("#questionText").html(`That's right! <br> <img src='${QandAs[currentQ].image}' >`);
         }
         // After 5 seconds, automatically runs nextQuestion
         setTimeout(nextQuestion, 5000);
@@ -229,12 +232,13 @@ $("#game").on("click", ".answer", function() {
             // clearing interval so countdown doesn't speed up
             clearInterval(questionTimeout);
             // show result text
-            if (QandAs[currentQ].text !== false) {
+            if (QandAs[currentQ].hasOwnProperty("text")) {
                 $(".answer, #time").empty();
-                $("#questionText").text("The correct answer is " + QandAs[currentQ].correctAnswer + ". " + QandAs[currentQ].text);
+                $("#questionText").html(`Good guess! The correct answer was ${QandAs[currentQ].correctAnswer}. ${QandAs[currentQ].text} <br> <img src='${QandAs[currentQ].image}' >`);
+
             } else {
                 $(".answer, #time").empty();
-                $("#questionText").text("The correct answer is " + QandAs[currentQ].correctAnswer + ". ");
+                $("#questionText").html(`Good guess! The correct answer was ${QandAs[currentQ].correctAnswer}. <br> <img src='${QandAs[currentQ].image}' >`);
             }
             // After 5 seconds, automatically runs nextQuestion
             setTimeout(nextQuestion, 5000);        
