@@ -84,7 +84,7 @@ var QandAs = [
         a3: "Seas",
         a4: "Commerce",
         correctAnswer: "Commerce",
-        image: "./assets/images/mercury.png"
+        image: "./assets/images/mercury.jpg"
     },
     // Question 10
     {   question: "What lies beyond our solar system?",
