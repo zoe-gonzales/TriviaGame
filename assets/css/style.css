@@ -26,6 +26,7 @@ h1 {
     border: 1px solid black;
 }
 
+
 /* Question Container Styles */
 .container {
     margin: 6rem;
@@ -42,6 +43,10 @@ h1 {
 
 .answer:hover {
     color: #CA4CFF;
+}
+
+.no-hover-style:hover {
+    color: aliceblue;
 }
 
 /* Result page images */

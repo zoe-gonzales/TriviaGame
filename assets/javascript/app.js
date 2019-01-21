@@ -110,6 +110,8 @@ var questionTimeout;
 var currentQ = 0;
 // Saves the user's answer
 var userGuess;
+// flag for checking if click is disabled
+var clickDisabled = false;
 
 // FUNCTIONS
 // When function runs, updates DOM and sets interval for remaining time to answer question 
@@ -152,9 +154,11 @@ function showQuestion() {
                     if (QandAs[currentQ].hasOwnProperty("text")) {
                         $(".answer, #time").empty();
                         $("#questionText").html(`Out of time! The correct answer was ${QandAs[currentQ].correctAnswer}. ${QandAs[currentQ].text} <br> <img src='${QandAs[currentQ].image}' >`);
+                        $("#game").off("click", ".answer");
                     } else {
                         $(".answer, #time").empty();
                         $("#questionText").html(`Out of time! The correct answer was ${QandAs[currentQ].correctAnswer}. <br> <img src='${QandAs[currentQ].image}' >`);
+                        $("#game").off("click", ".answer");
                     }
                     // After 5 seconds, automatically runs nextQuestion
                     setTimeout(nextQuestion, 5000);
@@ -163,11 +167,50 @@ function showQuestion() {
     }
 }
 
+function answered() {
+    // prevents user from clicking on elements containing other answers by removing event listener
+    $("#game").off("click", ".answer");
+    // assigns user guess to value of clicked element
+    userGuess = $(this).attr("data-answer");
+    // clearing interval so countdown doesn't speed up
+    clearInterval(questionTimeout);
+    // if the the correct answer is clicked 
+    if(userGuess === QandAs[currentQ].correctAnswer) {
+        // correct answers var increments
+        correctAnswers++;
+        // show result text
+        if (QandAs[currentQ].hasOwnProperty("text")) {
+            $(".answer, #time").empty();
+            $("#questionText").html(`That's right! ${QandAs[currentQ].text} <br> <img src='${QandAs[currentQ].image}' >`);
+        } else {
+            $(".answer, #time").empty();
+            $("#questionText").html(`That's right! <br> <img src='${QandAs[currentQ].image}' >`);
+        }
+        // After 5 seconds, automatically runs nextQuestion
+        setTimeout(nextQuestion, 5000);        
+        // else if incorrect answer is clicked
+    } else if (userGuess !== QandAs[currentQ].correctAnswer) {
+        // incorrect answers var increments
+        incorrectAnswers++;
+        // show result text
+        if (QandAs[currentQ].hasOwnProperty("text")) {
+            $(".answer, #time").empty();
+            $("#questionText").html(`Good guess! The correct answer was ${QandAs[currentQ].correctAnswer}. ${QandAs[currentQ].text} <br> <img src='${QandAs[currentQ].image}' >`);
+        } else {
+            $(".answer, #time").empty();
+            $("#questionText").html(`Good guess! The correct answer was ${QandAs[currentQ].correctAnswer}. <br> <img src='${QandAs[currentQ].image}' >`);
+        }
+        // After 5 seconds, automatically runs nextQuestion
+        setTimeout(nextQuestion, 5000);        
+    }
+}
+
 // When function runs, increments the currentQ value and reruns showQuestion
 function nextQuestion() {
     userGuess = undefined;
     timeRemaining = 20;
     currentQ++;
+    $("#game").on("click", ".answer", answered);
     showQuestion();
 }
 
@@ -181,6 +224,7 @@ function userResults() {
     // total of unanswered questions
     $("#answer3Text").text(`Unanswered questions: ${unanswered}`);
     $("#answer4Text, #time").empty();
+    $(".answer").addClass("no-hover-style");
     var playAgainButton = $("<button>");
     playAgainButton.attr("id", "reset-game");
     playAgainButton.addClass("btn btn-primary");
@@ -201,48 +245,13 @@ function reset() {
     // Running function to show questions
     showQuestion();
     $("#reset-game").remove();
+    $(".answer").removeClass("no-hover-style");
 }
 
 // CLICK EVENTS
 // When clicked runs showQuestion, starts game
 $("#start-button").on("click", showQuestion);
-// When clicked runs function to show question
-$("#game").on("click", ".answer", function() {
-    userGuess = $(this).attr("data-answer");
-    // if the the correct answer is clicked 
-    if(userGuess === QandAs[currentQ].correctAnswer) {
-        // correct answers var increments
-        correctAnswers++;
-        // clearing interval so countdown doesn't speed up
-        clearInterval(questionTimeout);
-        // show result text
-        if (QandAs[currentQ].hasOwnProperty("text")) {
-            $(".answer, #time").empty();
-            $("#questionText").html(`That's right! ${QandAs[currentQ].text} <br> <img src='${QandAs[currentQ].image}' >`);
-        } else {
-            $(".answer, #time").empty();
-            $("#questionText").html(`That's right! <br> <img src='${QandAs[currentQ].image}' >`);
-        }
-        // After 5 seconds, automatically runs nextQuestion
-        setTimeout(nextQuestion, 5000);
-        // else if incorrect answer is clicked
-        } else if (userGuess !== QandAs[currentQ].correctAnswer) {
-        // incorrect answers var increments
-            incorrectAnswers++;
-            // clearing interval so countdown doesn't speed up
-            clearInterval(questionTimeout);
-            // show result text
-            if (QandAs[currentQ].hasOwnProperty("text")) {
-                $(".answer, #time").empty();
-                $("#questionText").html(`Good guess! The correct answer was ${QandAs[currentQ].correctAnswer}. ${QandAs[currentQ].text} <br> <img src='${QandAs[currentQ].image}' >`);
-
-            } else {
-                $(".answer, #time").empty();
-                $("#questionText").html(`Good guess! The correct answer was ${QandAs[currentQ].correctAnswer}. <br> <img src='${QandAs[currentQ].image}' >`);
-            }
-            // After 5 seconds, automatically runs nextQuestion
-            setTimeout(nextQuestion, 5000);        
-        }
-});
+// When clicked shows result page and tallies wrong/right answers
+$("#game").on("click", ".answer", answered);
 // When clicked runs reset function to play game again
 $("#game").on("click", "#reset-game", reset);
