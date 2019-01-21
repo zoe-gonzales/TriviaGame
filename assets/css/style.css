@@ -32,12 +32,7 @@ h1 {
     height: 100vh;
 }
 
-.question {
-    font-size: 3.5rem;
-    font-family: 'Thasadith', sans-serif;
-    padding: 1rem;
-}
-
+.question,
 .answer,
 .time {
     font-size: 2rem;
@@ -45,9 +40,13 @@ h1 {
     padding: 1rem;
 }
 
+.answer:hover {
+    color: #CA4CFF;
+}
+
 /* Result page images */
 img {
     width: 450px;
     margin: 1.5rem;
-    border: 2px solid purple;
+    border: 2px solid #8F00CC;
 }

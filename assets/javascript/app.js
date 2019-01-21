@@ -47,7 +47,7 @@ var QandAs = [
         a4: "Comets",
         correctAnswer: "Comets",
         text: "The Oort Cloud contains comets that take more than 200 years to orbit the Sun.",
-        image: "./assets/images/comet.jpg"
+        image: "./assets/images/comet.gif"
     },
     // Question 6
     {   question: "All of the stars in the Milky Way (including the Sun) orbit around a supermassive black hole that is ___ times as massive as our sun.",
